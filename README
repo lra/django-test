@@ -1,1 +1,47 @@
 Testing some Django stuff in a git repository
+
+HOWTO write a clean Django app on OS X:
+
+# Install Django
+sudo pip install django
+
+# Create an empty project named test_project
+django-admin.py startproject test_project
+
+# Launch the dev webserver
+cd test_project
+chmod +x manage.py
+./manage.py runserver
+
+# Set up some database
+vi settings.py
+Example:
+'ENGINE': 'django.db.backends.sqlite3'
+'NAME': '/Users/analogue/src/django-test/test_project/sqlite3.db'
+
+# Sync the database with the django installed apps
+# Also create the Django super user
+./manage.py syncdb
+
+# Create a polls application inside the test_project project
+./manage.py startapp polls
+
+# Create the polls data model
+vi polls/models.py
+
+class Poll(models.Model):
+    question = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+
+class Choice(models.Model):
+    poll = models.ForeignKey(Poll)
+    choice = models.CharField(max_length=200)
+    votes = models.IntegerField()
+
+# Add the polls app in the parent test_project project
+vi settings.py
+
+INSTALLED_APPS = ([...], 'polls', )
+
+# Sync the db again
+./migrate.py syncdb
